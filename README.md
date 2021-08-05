@@ -42,5 +42,36 @@ Entity 설계 시 주의점
 
       class org.hibernate.collection.internal.PersistentBag
     
+  
+  D-2
+   <EntityManager 와 @RequiredArgsConstructor>
+   
+   ![image](https://user-images.githubusercontent.com/79154652/127878782-a474cc9f-3669-4d8b-aa9f-ae2ffa1a9bc1.png)
+   
+      
+    
+    
+     
+    EntityManager는 원래 @PersistenceContext로 주입을 받지만
+    
+    Spring Data JPA에서 @Autowired를 지원해주기 때문에 EntityManager를 final키워드 선언해주어 생성자 주입이 가능
+    
+    final 키워드 추가로 컴파일 시점에 memberRepository를 설정하지 않는 오류 체크 가능
+    
+    생성자가 하나면, @Autowired 생략 가능
+    
+    @RequiredArgsConstructor 사용
+    
+   <Transactional>
+  
+  ![image](https://user-images.githubusercontent.com/79154652/127879849-8dd485df-aec8-4721-a8db-0f3a3ff60b00.png)
+
+  
+  @Transactional : 트랜잭션, 영속성 컨텍스트
+  
+    1)readOnly=true : 데이터의 변경이 없는 읽기 전용 메서드에 사용, 영속성 컨텍스트를 플러시 하지 않으므로 약간의 성능 향상! 추가로 데이터 변경 값이 있는 곳은 메소드 위에 
+  
+    2)데이터베이스 드라이버가 지원하면 DB에서 성능 향상
+
     
     
