@@ -19,12 +19,12 @@ public class OrderRepository {
 
     private final EntityManager em;
 
-    public void save(Order order){
+    public void save(Order order) {
         em.persist(order);
 
     }
 
-    public Order findOne(Long id){
+    public Order findOne(Long id) {
         return em.find(Order.class, id);
     }
 
@@ -54,13 +54,13 @@ public class OrderRepository {
         cq.where(cb.and(criteria.toArray(new Predicate[criteria.size()])));
         TypedQuery<Order> query = em.createQuery(cq).setMaxResults(1000); //최대1000건
         return query.getResultList();
-}
+    }
 
     public List<Order> findAllWithMember() {
 
         return em.createQuery("select o from Order o" +
-                                     " join fetch o.member m" +
-                                     " join fetch o.delivery d", Order.class)
+                " join fetch o.member m" +
+                " join fetch o.delivery d", Order.class)
                 .getResultList();
 
     }
@@ -70,6 +70,29 @@ public class OrderRepository {
                 "select new jpabook.jpashop.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address) from Order o" +
                         " join o.member m" +
                         " join o.delivery d", OrderSimpleQueryDto.class)
+                .getResultList();
+
+    }
+
+    public List<Order> findWithCollection() {
+        return em.createQuery(
+                "select distinct o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d" +
+                        " join fetch o.orderItems n" +
+                        " join fetch n.item i", Order.class)
+                .getResultList();
+
+    }
+
+    public List<Order> findAllWithMemberPage(int offset, int limit) {
+
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
                 .getResultList();
 
     }
