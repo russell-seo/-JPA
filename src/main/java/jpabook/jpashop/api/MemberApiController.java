@@ -1,10 +1,15 @@
 package jpabook.jpashop.api;
 
+import jpabook.jpashop.datajpa.jparepository.UserRepository;
 import jpabook.jpashop.domain.Member;
+import jpabook.jpashop.repository.MemberRepository;
 import jpabook.jpashop.service.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +20,7 @@ import java.util.stream.Collectors;
 public class MemberApiController {
 
     private final MemberService memberService;
+    private final UserRepository userRepository;
 
     public CreatememberResponse saveMemeberV1(@RequestBody Member member){
         Long id = memberService.join(member);
@@ -49,6 +55,13 @@ public class MemberApiController {
         memberService.update(id, request.getName());
         Member one = memberService.findOne(id);
         return new UpdateResponse(one.getId(), one.getName());
+    }
+
+    @GetMapping("/pagemember") //페이지 무조건 DTO로 반환 Entity 외부에 노출 X
+    public Page<MemberDtos> pageMember(@PageableDefault(size = 5) Pageable pageable){
+        Page<Member> page = userRepository.findAll(pageable);
+        Page<MemberDtos> maps = page.map(o -> new MemberDtos(o.getName(), o.getAge()));
+        return maps;
     }
 
     @Data

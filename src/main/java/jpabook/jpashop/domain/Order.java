@@ -50,7 +50,7 @@ public class Order {
     }
     public void setDelivery(Delivery delivery){
         this.delivery = delivery;
-                delivery.setOrder(this);
+        delivery.setOrder(this);
     }
 
         //== 생성 메서드==//
